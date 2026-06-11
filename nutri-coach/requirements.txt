@@ -1,0 +1,4 @@
+image
+flask
+requests
+google-genai
