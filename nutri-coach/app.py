@@ -22,23 +22,11 @@ model_name = "gemini-2.5-flash"
 # )
 
 def input_image_setup(uploaded_file):
-    """
-    Encodes the uploaded image file into a base64 string to be used with AI models.
-
-    Parameters:
-    - uploaded_file: File-like object uploaded via a file uploader (Streamlit or other frameworks)
-
-    Returns:
-    - encoded_image (str): Base64 encoded string of the image data
-    """
     # Check if a file has been uploaded
     if uploaded_file is not None:
-        # Read the file into bytes
-        bytes_data = uploaded_file.read()
-
-        # Encode the image to a base64 string
-        encoded_image = base64.b64encode(bytes_data).decode("utf-8")
-        return encoded_image
+        image = Image.open(uploaded_file.stream)
+        image.load() 
+        return image
     
     else:
         raise FileNotFoundError("No file uploaded")
@@ -66,18 +54,15 @@ def format_response(response_text):
 
     return response_text
 
-def generate_model_response(encoded_image, user_query, assistant_prompt):
+def generate_model_response(pil_image, user_query, assistant_prompt):
     """
     Sends an image and a query to the model and retrieves the description or answer.
     Formats the response using HTML elements for better presentation.
     """
-    image = Image.open(BytesIO(encoded_image))
     messages = [
-        
-        assistant_prompt + "\n\n" + user_query,
-        image
+        f"{assistant_prompt}\n\n{user_query}",
+        pil_image
     ]
-    
 
     try:
         response = client.models.generate_content(
@@ -105,9 +90,9 @@ def index():
 
         if uploaded_file:
             # Process the uploaded image
-            encoded_image = input_image_setup(uploaded_file)
+            pil_image = input_image_setup(uploaded_file)
 
-            if not encoded_image:
+            if not pil_image:
                 flash("Error processing the image. Please try again.", "danger")
                 return redirect(url_for("index"))
 
@@ -145,7 +130,7 @@ def index():
 
             """
             # Generate the model's response
-            response = generate_model_response(encoded_image, user_query, assistant_prompt)
+            response = generate_model_response(pil_image, user_query, assistant_prompt)
 
             # Render the result
             return render_template("index.html", user_query=user_query, response=response)
