@@ -1,0 +1,6 @@
+langchain
+crewai
+langchain-community
+crewai-tools
+litellm
+# databricks-sdk
