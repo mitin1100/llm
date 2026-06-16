@@ -1,0 +1,6 @@
+pydantic
+langchain
+crewai
+crewai-tools
+langchain-google-genai
+litellm
