@@ -1,0 +1,4 @@
+google-genai
+beeai-framework[wikipedia]
+pydantic
+pydantic-core
