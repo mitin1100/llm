@@ -3,3 +3,6 @@ ag2[gemini]
 matplotlib 
 numpy 
 pyautogen
+google_genai
+openai
+
